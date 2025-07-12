@@ -9,6 +9,9 @@ const Navbar = () => {
         <NavLink to="/">Home</NavLink>
       </li>
       <li>
+        <NavLink to="/send-parcel">Send A Parcel</NavLink>
+      </li>
+      <li>
         <NavLink to="/coverage">Coverage</NavLink>
       </li>
       <li>
@@ -45,9 +48,8 @@ const Navbar = () => {
             {navItems}
           </ul>
         </div>
-        <Link to="/">
-          <ZapShiftLogo></ZapShiftLogo>
-        </Link>
+
+        <ZapShiftLogo></ZapShiftLogo>
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">{navItems}</ul>
