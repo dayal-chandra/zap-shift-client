@@ -1,5 +1,6 @@
 import React from "react";
-import { Outlet } from "react-router";
+import { NavLink, Outlet } from "react-router";
+import ZapShiftLogo from "../pages/shared/ZapShiftLogo/ZapShiftLogo";
 
 const DashboardLayout = () => {
   return (
@@ -40,8 +41,9 @@ const DashboardLayout = () => {
         ></label>
         <ul className="menu bg-base-200 text-base-content min-h-full w-1/2 lg:w-80 p-4">
           {/* Sidebar content here */}
+          <ZapShiftLogo></ZapShiftLogo>
           <li>
-            <a>Sidebar Item 1</a>
+            <NavLink to="my-parcels">My Parcels</NavLink>
           </li>
           <li>
             <a>Sidebar Item 2</a>
