@@ -73,7 +73,7 @@ const SendParcel = () => {
     const finalData = {
       ...parcelData,
       created_By: user.email,
-
+      payment_status: "unpaid",
       creation_date: new Date().toISOString(),
     };
 
