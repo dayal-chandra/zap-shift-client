@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import warehouse from "../Coverage/branchesData.json";
 import useAuth from "../../hooks/useAuth";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const SendParcel = () => {
   const {
@@ -14,6 +15,7 @@ const SendParcel = () => {
   } = useForm();
 
   const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
 
   // Extract unique region names
   const uniqueRegions = [...new Set(warehouse.map((item) => item.region))];
@@ -70,11 +72,20 @@ const SendParcel = () => {
   const confirmSubmission = () => {
     const finalData = {
       ...parcelData,
+      created_By: user.email,
+
       creation_date: new Date().toISOString(),
     };
 
-    console.log("Saving to DB:", finalData);
-    toast.success("Parcel added successfully!");
+    axiosSecure.post("/parcels", finalData).then((res) => {
+      console.log(res.data);
+      if (res.data.insertedId) {
+        // redirect to the payment page
+
+        toast.success("Parcel added successfully!");
+      }
+    });
+
     setShowConfirm(false);
     reset();
   };
