@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import warehouse from "../Coverage/branchesData.json";
+import useAuth from "../../hooks/useAuth";
 
 const SendParcel = () => {
   const {
@@ -11,6 +12,8 @@ const SendParcel = () => {
     reset,
     formState: { errors },
   } = useForm();
+
+  const { user } = useAuth();
 
   // Extract unique region names
   const uniqueRegions = [...new Set(warehouse.map((item) => item.region))];
@@ -30,18 +33,38 @@ const SendParcel = () => {
   const [parcelData, setParcelData] = useState(null);
 
   const onSubmit = (data) => {
-    let cost = 100;
-    if (data.type === "non-document") {
-      cost += parseFloat(data.weight || 0) * 10;
-    }
-    if (data.senderServiceCenter !== data.receiverServiceCenter) {
-      cost += 50;
+    const isWithinCity = data.senderRegion === data.receiverRegion;
+    const breakdown = {
+      base: 0,
+      extraWeightCharge: 0,
+      outOfCityCharge: 0,
+      total: 0,
+    };
+
+    if (data.type === "document") {
+      breakdown.base = isWithinCity ? 60 : 80;
+    } else {
+      const weight = parseFloat(data.weight || 0);
+
+      if (weight <= 3) {
+        breakdown.base = isWithinCity ? 110 : 150;
+      } else {
+        const extraWeight = weight - 3;
+        breakdown.base = isWithinCity ? 110 : 150;
+        breakdown.extraWeightCharge = extraWeight * 40;
+
+        if (!isWithinCity) {
+          breakdown.outOfCityCharge = 40;
+        }
+      }
     }
 
-    setDeliveryCost(cost);
+    breakdown.total =
+      breakdown.base + breakdown.extraWeightCharge + breakdown.outOfCityCharge;
+
+    setDeliveryCost(breakdown);
     setParcelData(data);
     setShowConfirm(true);
-    toast.success(`Estimated delivery cost: $${cost}`);
   };
 
   const confirmSubmission = () => {
@@ -116,7 +139,7 @@ const SendParcel = () => {
             <div className="grid grid-cols-1 gap-4">
               <input
                 type="text"
-                defaultValue="John Doe"
+                placeholder="John Doe"
                 {...register("senderName", { required: true })}
                 className="input input-bordered"
               />
@@ -227,22 +250,68 @@ const SendParcel = () => {
 
       {/* Confirmation Dialog */}
       {showConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-xl shadow-xl space-y-4 max-w-sm w-full">
-            <h2 className="text-xl font-bold text-center">Confirm Parcel</h2>
-            <p className="text-center">
-              Delivery Cost:{" "}
-              <span className="font-bold text-orange-500">${deliveryCost}</span>
-            </p>
+        <div className="fixed inset-0 backdrop-blur-[10px] flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-xl shadow-xl shadow-primary space-y-4 max-w-md w-full">
+            <h2 className="text-xl font-bold text-center">
+              Confirm Delivery Cost
+            </h2>
+
+            <div className="text-sm space-y-2">
+              <p>
+                <span className="font-medium">Parcel Type:</span>{" "}
+                {parcelData.type === "document" ? "Document" : "Non-Document"}
+              </p>
+              {parcelData.type === "non-document" && (
+                <p>
+                  <span className="font-medium">Weight:</span>{" "}
+                  {parcelData.weight} kg
+                </p>
+              )}
+              <p>
+                <span className="font-medium">Delivery Route:</span>{" "}
+                {parcelData.senderRegion === parcelData.receiverRegion
+                  ? "Within City"
+                  : "Outside City/District"}
+              </p>
+
+              <div className="divider my-2" />
+
+              <p>
+                <span className="font-medium">Base Price:</span> ৳
+                {deliveryCost.base}
+              </p>
+              {deliveryCost.extraWeightCharge > 0 && (
+                <p>
+                  <span className="font-medium">Extra Weight Charge:</span> ৳
+                  {deliveryCost.extraWeightCharge}
+                </p>
+              )}
+              {deliveryCost.outOfCityCharge > 0 && (
+                <p>
+                  <span className="font-medium">Out of City Charge:</span> ৳
+                  {deliveryCost.outOfCityCharge}
+                </p>
+              )}
+
+              <div className="divider my-2" />
+              <p className="text-lg font-bold">
+                Total Cost:{" "}
+                <span className="text-orange-500">৳{deliveryCost.total}</span>
+              </p>
+            </div>
+
             <div className="flex justify-between mt-4">
               <button
                 className="btn btn-outline"
                 onClick={() => setShowConfirm(false)}
               >
-                Cancel
+                Continue Editing
               </button>
-              <button className="btn btn-primary" onClick={confirmSubmission}>
-                Confirm
+              <button
+                className="btn btn-primary text-black"
+                onClick={confirmSubmission}
+              >
+                Proceed to Payment
               </button>
             </div>
           </div>
