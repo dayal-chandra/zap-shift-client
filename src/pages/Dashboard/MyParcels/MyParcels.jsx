@@ -3,10 +3,12 @@ import React from "react";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router";
 
 const MyParcels = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
 
   const { data: parcels = [], refetch } = useQuery({
     queryKey: ["my-parcels", user.email],
@@ -15,6 +17,10 @@ const MyParcels = () => {
       return res.data;
     },
   });
+
+  const handlePay = (id) => {
+    navigate(`/dashboard/payment/${id}`);
+  };
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -87,15 +93,18 @@ const MyParcels = () => {
                   </span>
                 </td>
                 <td className="px-4 py-3 space-x-2">
-                  <button className="text-blue-600 hover:underline">
+                  <button className="text-blue-600 btn btn-xs hover:underline">
                     View
                   </button>
-                  <button className="text-green-600 hover:underline">
+                  <button
+                    onClick={() => handlePay(parcel._id)}
+                    className="text-green-600 btn btn-xs hover:underline"
+                  >
                     Pay
                   </button>
                   <button
                     onClick={() => handleDelete(parcel._id)}
-                    className="text-red-600 hover:underline"
+                    className="text-red-600  btn btn-xs hover:underline"
                   >
                     Delete
                   </button>
