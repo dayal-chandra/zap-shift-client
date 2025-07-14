@@ -43,6 +43,9 @@ const DashboardLayout = () => {
           {/* Sidebar content here */}
           <ZapShiftLogo></ZapShiftLogo>
           <li>
+            <NavLink>Home</NavLink>
+          </li>
+          <li>
             <NavLink to="my-parcels">My Parcels</NavLink>
           </li>
           <li>

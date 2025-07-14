@@ -2,12 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import Swal from "sweetalert2";
 
 const MyParcels = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
 
-  const { data: parcels = [] } = useQuery({
+  const { data: parcels = [], refetch } = useQuery({
     queryKey: ["my-parcels", user.email],
     queryFn: async () => {
       const res = await axiosSecure.get(`/parcels?email=${user.email}`);
@@ -15,7 +16,31 @@ const MyParcels = () => {
     },
   });
 
-  console.log(parcels);
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axiosSecure.delete(`/parcels/${id}`).then((res) => {
+          if (res.data.deletedCount) {
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success",
+            });
+          }
+          refetch();
+        });
+      }
+    });
+  };
+
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-6 text-center text-[#068e79]">
@@ -25,6 +50,7 @@ const MyParcels = () => {
         <table className="min-w-full text-sm text-left border border-gray-200">
           <thead className="bg-gray-100 text-gray-700 font-semibold">
             <tr>
+              <th className="px-4 py-3">Title</th>
               <th className="px-4 py-3">Type</th>
               <th className="px-4 py-3">Created At</th>
               <th className="px-4 py-3">Payment Status</th>
@@ -37,6 +63,7 @@ const MyParcels = () => {
                 key={parcel._id || index}
                 className="border-t hover:bg-gray-50 transition-all"
               >
+                <td className="max-w-[180px] px-4 truncate">{parcel.title}</td>
                 <td className="px-4 py-3 capitalize">{parcel.type}</td>
                 <td className="px-4 py-3">
                   {new Date(parcel.creation_date).toLocaleString("en-GB", {
@@ -66,8 +93,11 @@ const MyParcels = () => {
                   <button className="text-green-600 hover:underline">
                     Pay
                   </button>
-                  <button className="text-red-600 hover:underline">
-                    Cancel
+                  <button
+                    onClick={() => handleDelete(parcel._id)}
+                    className="text-red-600 hover:underline"
+                  >
+                    Delete
                   </button>
                 </td>
               </tr>
