@@ -59,6 +59,7 @@ const MyParcels = () => {
               <th className="px-4 py-3">Title</th>
               <th className="px-4 py-3">Type</th>
               <th className="px-4 py-3">Created At</th>
+              <th className="px-4 py-3">Cost</th>
               <th className="px-4 py-3">Payment Status</th>
               <th className="px-4 py-3">Actions</th>
             </tr>
@@ -81,6 +82,7 @@ const MyParcels = () => {
                     hour12: true,
                   })}
                 </td>
+                <td className="px-4 py-3">${parcel.delivery_cost}</td>
                 <td className="px-4 py-3">
                   <span
                     className={`px-2 py-1 rounded text-white text-xs ${
@@ -96,12 +98,18 @@ const MyParcels = () => {
                   <button className="text-blue-600 btn btn-xs hover:underline">
                     View
                   </button>
-                  <button
-                    onClick={() => handlePay(parcel._id)}
-                    className="text-green-600 btn btn-xs hover:underline"
-                  >
-                    Pay
-                  </button>
+
+                  {parcel.payment_status === "paid" ? (
+                    ""
+                  ) : (
+                    <button
+                      onClick={() => handlePay(parcel._id)}
+                      className="text-green-600 btn btn-xs hover:underline"
+                    >
+                      Pay
+                    </button>
+                  )}
+
                   <button
                     onClick={() => handleDelete(parcel._id)}
                     className="text-red-600  btn btn-xs hover:underline"

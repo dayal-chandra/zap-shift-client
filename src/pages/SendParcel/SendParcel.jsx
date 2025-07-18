@@ -74,6 +74,7 @@ const SendParcel = () => {
       ...parcelData,
       created_By: user.email,
       payment_status: "unpaid",
+      delivery_cost: deliveryCost.total,
       creation_date: new Date().toISOString(),
     };
 
