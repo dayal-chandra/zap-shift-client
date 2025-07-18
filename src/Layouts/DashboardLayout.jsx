@@ -1,6 +1,9 @@
 import React from "react";
 import { NavLink, Outlet } from "react-router";
 import ZapShiftLogo from "../pages/shared/ZapShiftLogo/ZapShiftLogo";
+import { FaHome, FaBox, FaHistory, FaUserEdit } from "react-icons/fa";
+import { RiMoneyDollarCircleLine } from "react-icons/ri";
+import { HiOutlineSearchCircle } from "react-icons/hi";
 
 const DashboardLayout = () => {
   return (
@@ -42,14 +45,33 @@ const DashboardLayout = () => {
         <ul className="menu bg-base-200 text-base-content min-h-full w-1/2 lg:w-80 p-4">
           {/* Sidebar content here */}
           <ZapShiftLogo></ZapShiftLogo>
+
           <li>
-            <NavLink>Home</NavLink>
+            <NavLink to="/">
+              <FaHome className="inline-block mr-2" /> Home
+            </NavLink>
           </li>
           <li>
-            <NavLink to="my-parcels">My Parcels</NavLink>
+            <NavLink to="my-parcels">
+              <FaBox className="inline-block mr-2" /> My Parcels
+            </NavLink>
           </li>
           <li>
-            <a>Sidebar Item 2</a>
+            <NavLink to="payment-history">
+              <RiMoneyDollarCircleLine className="inline-block mr-2" /> Payment
+              History
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="track">
+              <HiOutlineSearchCircle className="inline-block mr-2" /> Track a
+              Package
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="profile">
+              <FaUserEdit className="inline-block mr-2" /> Update Profile
+            </NavLink>
           </li>
         </ul>
       </div>
