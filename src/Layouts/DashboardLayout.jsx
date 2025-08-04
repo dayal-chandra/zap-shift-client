@@ -1,7 +1,14 @@
 import React from "react";
 import { NavLink, Outlet } from "react-router";
 import ZapShiftLogo from "../pages/shared/ZapShiftLogo/ZapShiftLogo";
-import { FaHome, FaBox, FaHistory, FaUserEdit } from "react-icons/fa";
+import {
+  FaHome,
+  FaBox,
+  FaHistory,
+  FaUserEdit,
+  FaMotorcycle,
+  FaClock,
+} from "react-icons/fa";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import { HiOutlineSearchCircle } from "react-icons/hi";
 
@@ -71,6 +78,17 @@ const DashboardLayout = () => {
           <li>
             <NavLink to="profile">
               <FaUserEdit className="inline-block mr-2" /> Update Profile
+            </NavLink>
+          </li>
+          {/*RIDERS LINKS */}
+          <li>
+            <NavLink to="active-riders">
+              <FaMotorcycle className="inline-block mr-2" /> Active Riders
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="pending-riders">
+              <FaClock className="inline-block mr-2" /> Pending Riders
             </NavLink>
           </li>
         </ul>

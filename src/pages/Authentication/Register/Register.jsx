@@ -84,7 +84,7 @@ const Register = () => {
               <p className="text-red-500">Name is required.</p>
             )}
             {/*Photo field*/}
-            <label className="label">Name</label>
+            <label className="label">Photo</label>
             <input
               onChange={handleImageUpload}
               type="file"
